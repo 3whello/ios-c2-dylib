@@ -1,0 +1,29 @@
+name: Build iOS dylib
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Build dylib
+      run: |
+        clang -arch arm64 -dynamiclib \
+          -o custom_c2.dylib custom_c2.m \
+          -framework Foundation \
+          -framework UIKit \
+          -framework CoreLocation \
+          -mios-version-min=13.0
+
+    - name: Upload dylib
+      uses: actions/upload-artifact@v3
+      with:
+        name: custom_c2-dylib
+        path: custom_c2.dylib
