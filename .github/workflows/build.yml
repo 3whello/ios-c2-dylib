@@ -11,7 +11,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Build dylib
       run: |
@@ -23,7 +23,7 @@ jobs:
           -mios-version-min=13.0
 
     - name: Upload dylib
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: custom_c2-dylib
         path: custom_c2.dylib
